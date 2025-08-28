@@ -3,7 +3,7 @@
 
 A command-line interface application for managing a coffee shop's operations, built with Python, SQLAlchemy, and Click. Track inventory, process orders, and generate sales reports - all from your terminal!
 
-## Features
+## Features                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
 - **Menu Management**: Display available coffee drinks with prices
 - **Order Processing**: Place orders with real-time inventory validation

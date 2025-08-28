@@ -1,45 +1,67 @@
-"""
-Helper functions for coffee shop CLI.
-"""
 
-from sqlalchemy.orm import Session
-from lib.db.models import Coffee, Ingredient, Inventory
 
-def format_price(price):
-    """Format price as currency."""
-    return f"${price:.2f}"
 
-def get_coffee_by_id(session: Session, coffee_id: int):
-    """Get coffee by ID."""
-    return session.query(Coffee).filter_by(id=coffee_id).first()
+from .models import session, Customer, MenuItem, Order, OrderIte
 
-def get_ingredient_by_id(session: Session, ingredient_id: int):
-    """Get ingredient by ID."""
-    return session.query(Ingredient).filter_by(id=ingredient_id).first()
-
-def calculate_order_total(coffee, quantity):
-    """Calculate total price for an order."""
-    return coffee.price * quantity
-
-def check_inventory(session: Session, coffee, quantity):
-    """Check if there's enough inventory to make coffee."""
-    for ingredient_usage in coffee.ingredients:
-        inventory = session.query(Inventory).filter_by(
-            ingredient_id=ingredient_usage.ingredient_id
-        ).first()
-        
-        required = ingredient_usage.quantity * quantity
-        if not inventory or inventory.quantity < required:
-            return False, ingredient_usage.ingredient
+def seed_database():
+    # Create sample customers
+    customers = [
+        Customer(name="John Doe", email="john@example.com"),
+        Customer(name="Jane Smith", email="jane@example.com"),
+        Customer(name="Bob Johnson", email="bob@example.com")
+    ]
     
-    return True, None
+    # Create sample menu items
+    menu_items = [
+        MenuItem(
+            name="Espresso",
+            description="Strong black coffee made by forcing steam through ground coffee beans",
+            price=2.50,
+            category="Hot Coffee"
+        ),
+        MenuItem(
+            name="Cappuccino",
+            description="Espresso with steamed milk and a deep layer of foam",
+            price=3.50,
+            category="Hot Coffee"
+        ),
+        MenuItem(
+            name="Latte",
+            description="Espresso with steamed milk and a light layer of foam",
+            price=4.00,
+            category="Hot Coffee"
+        ),
+        MenuItem(
+            name="Iced Coffee",
+            description="Chilled coffee served with ice",
+            price=3.00,
+            category="Cold Coffee"
+        ),
+        MenuItem(
+            name="Muffin",
+            description="Freshly baked blueberry muffin",
+            price=2.00,
+            category="Pastry"
+        )
+    ]
+    
+    session.add_all(customers)
+    session.add_all(menu_items)
+    session.commit()
+    print("Database seeded successfully!")
 
-def update_inventory(session: Session, coffee, quantity):
-    """Update inventory after making coffee."""
-    for ingredient_usage in coffee.ingredients:
-        inventory = session.query(Inventory).filter_by(
-            ingredient_id=ingredient_usage.ingredient_id
-        ).first()
-        
-        if inventory:
-            inventory.quantity -= ingredient_usage.quantity * quantity
+def get_all_menu_items():
+    return session.query(MenuItem).all()
+
+def find_customer_by_email(email):
+    return session.query(Customer).filter(Customer.email==email).first()
+
+def create_customer(name, email):
+    customer=Customer(name=name, email=email)
+    session.add(customer)
+    session.commit()
+    return customer
+
+if __name__ == "__main__":
+    seed_database()
+

@@ -4,15 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sqlalchemy = ">=1.4.0"
+sqlalchemy = "*"
 alembic = "*"
 click = "*"
-python-dotenv = "*"
-faker = "*"
 
 [dev-packages]
-pytest = "*"
-ipython = "*"
 
 [requires]
 python_version = "3.9"
